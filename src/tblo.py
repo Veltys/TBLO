@@ -1,33 +1,32 @@
-import numpy as np
-import random as rand
-import pprint as pp
-
 from operator import attrgetter
+
+import numpy as np
+# import pprint as pp
+import random as rand
 
 
 class Learner(object):
-    """docstring for Learner"""
-    def __init__(self, initial_subjects, initial_fitness):
+    def __init__(self, initialSubjects, initialFitness):
         super(Learner, self).__init__()
 
-        self.subjects = initial_subjects
-        self.fitness = initial_fitness
+        self.subjects = initialSubjects
+        self.fitness = initialFitness
 
     def __repr__(self):
         return f'<Learner s: {self.subjects} | f: {self.fitness} >'
 
 
-class TBLO(object):
+class Tblo(object):
     learners = []
 
-    def __init__(self, npopulation,  ngenerations, fn_eval, *, fn_lb, fn_ub):
-        super(TBLO, self).__init__()
+    def __init__(self, nPopulation, nGenerations, fnEval, *, fnLb, fnUb):
+        super(Tblo, self).__init__()
 
-        self.npopulation = npopulation
-        self.ngenerations = ngenerations
-        self.fn_eval = fn_eval
-        self.fn_lb = np.array(fn_lb)
-        self.fn_ub = np.array(fn_ub)
+        self.nPopulation = nPopulation
+        self.nGenerations = nGenerations
+        self.fnEval = fnEval
+        self.fnLb = np.array(fnLb)
+        self.fnUb = np.array(fnUb)
 
 
     def optimize(self):
@@ -35,98 +34,101 @@ class TBLO(object):
         # pp.pprint(self.learners)
 
         for i, learner in enumerate(self.learners):
-            learner.subjects, learner.fitness = self.teacher_phase(learner, i)
-            learner.subjects, learner.fitness = self.learner_phase(learner, i)
+            learner.subjects, learner.fitness = self.teacherPhase(learner)
+            learner.subjects, learner.fitness = self.learnerPhase(learner, i)
 
         # pp.pprint(self.learners)
-        teacher = self.get_teacher()
+        teacher = self.getTeacher()
 
         return teacher.subjects
 
     def initialize(self):
-        self.learners = [self.create_learner() for i in range(self.npopulation)]
+        self.learners = [self.createLearner() for _ in range(self.nPopulation)]
 
-    def teacher_phase(self, learner, learner_index):
-        teacher = self.get_teacher()
+    def teacherPhase(self, learner):
+        teacher = self.getTeacher()
         tf = rand.randint(1, 2)
         c = np.zeros(len(teacher.subjects))
 
         for i, subject in enumerate(learner.subjects):
-            s_mean = np.mean([s.subjects[i] for s in self.learners])
+            sMean = np.mean([s.subjects[i] for s in self.learners])
             r = rand.random()
-            diff_mean = teacher.subjects[i] - (tf * s_mean)
-            c[i] = subject + (r * diff_mean)
+            diffMean = teacher.subjects[i] - (tf * sMean)
+            c[i] = subject + (r * diffMean)
 
-        rounded_c = np.around(c, decimals=4)
+        roundedC = np.around(c, decimals = 4)
 
-        best, best_fitness = self.select_best(learner.subjects, rounded_c)
+        best, bestFitness = self.selectBest(learner.subjects, roundedC)
 
-        return (best, best_fitness)
+        return (best, bestFitness)
 
-    def learner_phase(self, learner, learner_index):
-        k_index = self.random_learner_excluding([learner_index])
-        k_learner = self.learners[k_index]
-        k_subjets = k_learner.subjects
+    def learnerPhase(self, learner, learnerIndex):
+        kIndex = self.randomLearnerExcluding([learnerIndex])
+        kLearner = self.learners[kIndex]
+        kSubjets = kLearner.subjects
         c = np.zeros(len(learner.subjects))
 
         for i, subject in enumerate(learner.subjects):
-            if learner.fitness < k_learner.fitness:
-                diff = subject - k_subjets[i]
+            if learner.fitness < kLearner.fitness:
+                diff = subject - kSubjets[i]
             else:
-                diff = k_subjets[i] - subject
+                diff = kSubjets[i] - subject
 
             r = rand.random()
             c[i] = subject + (r * diff)
 
-        rounded_c = np.around(c, decimals=4)
-        best, best_fitness = self.select_best(learner.subjects, rounded_c)
+        roundedC = np.around(c, decimals = 4)
+        best, bestFitness = self.selectBest(learner.subjects, roundedC)
 
-        return (best, best_fitness)
+        return (best, bestFitness)
 
-    def get_teacher(self):
-        best = min(self.learners, key=attrgetter('fitness'))
+    def getTeacher(self):
+        best = min(self.learners, key = attrgetter('fitness'))
 
         return best
 
-    def select_best(self, subjects, c_subjects):
-        s_fitness = self.fitness(subjects)
-        c_fitness = self.fitness(c_subjects)
+    def selectBest(self, subjects, cSubjects):
+        sFitness = self.fitness(subjects)
+        cFitness = self.fitness(cSubjects)
 
-        if s_fitness > c_fitness:
-            best = c_subjects
-            best_fitness = c_fitness
+        if sFitness > cFitness:
+            best = cSubjects
+            bestFitness = cFitness
         else:
             best = subjects
-            best_fitness = s_fitness
+            bestFitness = sFitness
 
-        return (best, best_fitness)
+        return (best, bestFitness)
 
-    def random_learner_excluding(self, excluded_index):
-        available_indexes = set(range(self.npopulation))
-        exclude_set = set(excluded_index)
-        diff = available_indexes - exclude_set
+    def randomLearnerExcluding(self, excludedIndex):
+        availableIndexes = set(range(self.nPopulation))
+        excludeSet = set(excludedIndex)
+        diff = availableIndexes - excludeSet
         selected = rand.choice(list(diff))
 
         return selected
 
     def fitness(self, solution):
-        result = self.fn_eval(solution)
+        result = self.fnEval(solution)
 
+        '''
         if result >= 0:
             fitness = 1 / (1 + result)
         else:
             fitness = abs(result)
+        '''
 
-        return np.around(result, decimals=4)
+        return np.around(result, decimals = 4)
 
-    def create_learner(self):
-        solution = self.random_vector(self.fn_lb, self.fn_ub)
+    def createLearner(self):
+        solution = Tblo.randomVector(self.fnLb, self.fnUb)
         fitness = self.fitness(solution)
 
         return Learner(solution, fitness)
 
-    def random_vector(self, lb, ub):
+    @staticmethod
+    def randomVector(lb, ub):
         r = rand.random()
         solution = lb + (ub - lb) * r
 
-        return np.around(solution, decimals=4)
+        return np.around(solution, decimals = 4)
