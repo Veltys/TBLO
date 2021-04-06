@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 
+import sys
+
 import lib
 from tblo import Tblo
 
 
-def main():
+def main(argv):
     tbloSphere = Tblo(500, 100, lib.sphere, fnLb = [-5, -5], fnUb = [5, 5])
     tbloAckley = Tblo(500, 100, lib.ackley, fnLb = [-20, -20], fnUb = [20, 20])
     tbloRastrigin = Tblo(500, 100, lib.rastrigin, fnLb = [-5, -5], fnUb = [5, 5])
@@ -30,4 +32,4 @@ def main():
     print(f'Ackley({minX}, {minY}) = {round(evalResult, 4)}')
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
