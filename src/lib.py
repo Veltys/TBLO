@@ -1,3 +1,7 @@
+import ctypes
+import os
+
+import config
 import numpy as np
 
 
@@ -35,5 +39,22 @@ def rastrigin(d):
 def rastriginFn():
     def fn(*args):
         return sum([rastrigin(d) for _, d in enumerate(args)])
+
+    return fn
+
+
+def benchmark2020(x):
+    cnf = config.Config()
+
+    libtest = ctypes.CDLL(os.path.dirname(os.path.abspath(__file__)) + os.sep + 'libbenchmark.' + ('dll' if os.name == 'nt' else 'so'))
+    libtest.cec20_bench.argtypes = ctypes.c_size_t, ctypes.c_size_t, ctypes.POINTER(ctypes.c_double * len(x)), ctypes.c_ushort
+    libtest.cec20_bench.restype = ctypes.c_double
+
+    return libtest.cec20_bench(1, len(x), (ctypes.c_double * len(x))(*x), cnf.benchmark)
+
+
+def benchmark2020Fn():
+    def fn(*args):
+        return sum([benchmark2020(d) for _, d in enumerate(args)])
 
     return fn
