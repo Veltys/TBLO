@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 import lib
 from tblo import Tblo
 
