@@ -1,35 +1,52 @@
 #!/usr/bin/env python3
 
 
+import getopt
 import sys
 
+import config
 import lib
 from tblo import Tblo
 
 
 def main(argv):
-    tbloSphere = Tblo(500, 100, lib.sphere, fnLb = [-5, -5], fnUb = [5, 5])
-    tbloAckley = Tblo(500, 100, lib.ackley, fnLb = [-20, -20], fnUb = [20, 20])
-    tbloRastrigin = Tblo(500, 100, lib.rastrigin, fnLb = [-5, -5], fnUb = [5, 5])
+    cnf = config.Config()
 
-    minX, minY = tbloSphere.optimize()
+    try:
+        opts, _ = getopt.getopt(
+            argv,
+            'b:d:v',
+            [
+                'bench=',
+                'dim=',
+            ]
+        )
 
-    evalResult = lib.sphere([minX, minY])
+    except getopt.GetoptError:
+        print('Usage: main.py [-b benchmark_id or --bench=benchmark_id] [-d dimensions or --dim=dimensions] [-v]')
 
-    print(f'Sphere MIN: x={minX}, y={minY}')
-    print(f'Sphere({minX}, {minY}) = {round(evalResult, 4)}')
+        sys.exit(2)
 
-    minX, minY = tbloRastrigin.optimize()
-    evalResult = lib.rastrigin([minX, minY])
 
-    print(f'Rastrigin MIN: x={minX}, y={minY}')
-    print(f'Rastrigin({minX}, {minY}) = {round(evalResult, 4)}')
+    for opt, arg in opts:
+        if opt in ('-b', '--bench'):
+            cnf.benchmark = int(arg)
 
-    minX, minY = tbloAckley.optimize()
-    evalResult = lib.ackley([minX, minY])
+        elif opt in ('-d', '--dim'):
+            cnf.dimensions = int(arg)
 
-    print(f'Ackley MIN: x={minX}, y={minY}')
-    print(f'Ackley({minX}, {minY}) = {round(evalResult, 4)}')
+        elif opt in ('-v'):
+            cnf.verbosity = True
+
+
+    tbloBenchmark = Tblo(50, 150000, lib.benchmark2020, fnLb = [-100, -100], fnUb = [100, 100])
+
+    minX, minY = tbloBenchmark.optimize()
+    evalResult = lib.benchmark2020([minX, minY])
+
+    print(f'Benchmark2020 MIN: x={minX}, y={minY}')
+    print(f'Benchmark2020({minX}, {minY}) = {round(evalResult, 4)}')
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

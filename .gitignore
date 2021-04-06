@@ -200,3 +200,8 @@ local.properties
 # Typically, this file would be tracked if it contains build/dependency configurations:
 .project
 
+input_data
+libbenchmark.dll
+libbenchmark.so
+
+TLBO_[0-9]*_[0-9][0-9].txt
