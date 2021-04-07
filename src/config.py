@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import lib
+
 
 class ConfigSingleton(type):
     _instances = {}
@@ -15,5 +17,9 @@ class Config(metaclass = ConfigSingleton):
     def __init__(self):
         self.benchmark = 1
         self.dimensions = 10
+        self.export = True
         self.evals = 500000
-        self.verbosity = False
+        self.function = lib.benchmark2020
+        self.iterations = 150000
+        self.runs = 30
+        self.verbosity = True

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
 
+import csv
 import getopt
+from itertools import chain
+import os
 import sys
+import time
 
 import config
-import lib
 from tblo import Tblo
 
 
@@ -38,14 +41,55 @@ def main(argv):
         elif opt in ('-v'):
             cnf.verbosity = True
 
+    optimizer = 'TBLO'
 
-    tbloBenchmark = Tblo(50, 150000, lib.benchmark2020, fnLb = [-100, -100], fnUb = [100, 100])
+    # CSV file header
+    header = []
 
-    minX, minY = tbloBenchmark.optimize()
-    evalResult = lib.benchmark2020([minX, minY])
+    for i in range(cnf.iterations):
+        header.append(f'It{i + 1}')
 
-    print(f'Benchmark2020 MIN: x={minX}, y={minY}')
-    print(f'Benchmark2020({minX}, {minY}) = {round(evalResult, 4)}')
+    try:
+        if cnf.export:
+            out = open(f'.{os.sep}{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv', 'a')
+
+    except IOError:
+        print(f'Error de apertura del archivo <{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv>')
+        print(f'ERROR: imposible abrir el archivo <{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv>', file = sys.stderr)
+
+        exit(os.EX_OSFILE) # @UndefinedVariable
+
+    else:
+        if cnf.verbosity:
+            print(f'{optimizer} is optimizing with {cnf.function.__name__}')
+
+        if cnf.export == True:
+            csvOut = csv.writer(out, delimiter = ',')
+
+            csvOut.writerow(chain.from_iterable([['Optimizer' + 'objfname' + 'ExecutionTime'], header]))
+
+        res = []
+
+        for i in range(cnf.runs):
+            if cnf.verbosity:
+                print(f'Run {i + 1} of {cnf.runs}')
+
+            timerStart = time.time()
+
+            for _ in range(cnf.iterations):
+                tbloBenchmark = Tblo(50, 100, cnf.function, fnLb = [-100, -100], fnUb = [100, 100])
+
+                res.append(cnf.function(tbloBenchmark.optimize()))
+
+
+            timerEnd = time.time()
+
+            if cnf.export:
+                csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
+
+
+        if cnf.export:
+            out.close()
 
 
 if __name__ == '__main__':
