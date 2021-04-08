@@ -71,6 +71,8 @@ def main(argv):
         res = []
 
         for i in range(cnf.runs):
+            evals = 0
+            
             if cnf.verbosity:
                 print(f'Run {i + 1} of {cnf.runs}')
 
@@ -80,13 +82,16 @@ def main(argv):
                 tbloBenchmark = Tblo(50, 100, cnf.function, fnLb = [-100, -100], fnUb = [100, 100])
 
                 res.append(cnf.function(tbloBenchmark.optimize()))
-
+                
+                evals += 1
+                
+                if evals >= cnf.evals:
+                    break
 
             timerEnd = time.time()
 
             if cnf.export:
                 csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
-
 
         if cnf.export:
             out.close()

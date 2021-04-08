@@ -17,8 +17,6 @@ class Learner(object):
 
 
 class Tblo(object):
-    # TODO: Eval limiter
-
     learners = []
 
     def __init__(self, nPopulation, nGenerations, fnEval, *, fnLb, fnUb):
