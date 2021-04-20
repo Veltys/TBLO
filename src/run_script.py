@@ -5,7 +5,6 @@
 import linecache
 import os
 import re
-from shutil import rmtree
 import sys
 
 import numpy
@@ -60,20 +59,15 @@ def preprocesar(argv):
 
 def posprocesar(dimensiones):
     # Recogida de todos los archivos de salida
-    # TODO: Adaptar
-    directorios = [ name for name in os.listdir('.') if os.path.isdir(os.path.join('.', name)) ]
+    archivo = [ name for name in os.listdir('.') if os.path.isfile(os.path.join('.', name)) and re.match(r"^experiment-\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}.csv$", name) ]
 
-    for directorio in directorios:
-        if re.match(r"[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}", directorio):
-            break
-
-    archivo = directorio + os.sep + "experiment_details.csv"
+    archivo = archivo[0]
 
     # Preparación de la matriz de resultados
     res = numpy.zeros((16, 30))
 
     for i in range(30):
-        linea = linecache.getline(archivo, i + 2)
+        linea = linecache.getline(archivo, i * 2 + 3)
 
         linea = linea.split(',')
 
@@ -90,7 +84,7 @@ def posprocesar(dimensiones):
                 # En tal caso, se copia el resultado de la línea anterior
                 res[j][i] = res[j - 1][i]
 
-    rmtree(directorio)
+    os.remove(archivo)
 
     return res
 

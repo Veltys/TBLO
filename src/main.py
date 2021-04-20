@@ -15,6 +15,8 @@ from tblo import Tblo
 def main(argv):
     cnf = config.Config()
 
+    NOMBRE_ARCHIVO = f'experiment-{time.strftime("%Y-%m-%d-%H-%M-%S")}.csv'
+
     try:
         opts, _ = getopt.getopt(
             argv,
@@ -51,11 +53,11 @@ def main(argv):
 
     try:
         if cnf.export:
-            out = open(f'.{os.sep}{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv', 'a')
+            out = open(f'.{os.sep}{NOMBRE_ARCHIVO}', 'a')
 
     except IOError:
-        print(f'Error de apertura del archivo <{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv>')
-        print(f'ERROR: imposible abrir el archivo <{time.strftime("%Y-%m-%d-%H-%M-%S")}-experiment.csv>', file = sys.stderr)
+        print(f'Error de apertura del archivo <{NOMBRE_ARCHIVO}>')
+        print(f'ERROR: imposible abrir el archivo <{NOMBRE_ARCHIVO}>', file = sys.stderr)
 
         exit(os.EX_OSFILE) # @UndefinedVariable
 
