@@ -68,13 +68,13 @@ def main(argv):
         if cnf.export == True:
             csvOut = csv.writer(out, delimiter = ',')
 
-            csvOut.writerow(chain.from_iterable([['Optimizer' + 'objfname' + 'ExecutionTime'], header]))
+            csvOut.writerow(chain.from_iterable([['Optimizer', 'objfname', 'ExecutionTime'], header]))
 
         for i in range(cnf.runs):
             res = []
 
             evals = 0
-            
+
             if cnf.verbosity:
                 print(f'Run {i + 1} of {cnf.runs}')
 
