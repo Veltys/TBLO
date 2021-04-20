@@ -82,9 +82,9 @@ def main(argv):
                 tbloBenchmark = Tblo(50, 100, cnf.function, fnLb = [-100, -100], fnUb = [100, 100])
 
                 res.append(cnf.function(tbloBenchmark.optimize()))
-                
-                evals += 1
-                
+
+                evals += 2
+
                 if evals >= cnf.evals:
                     break
 
