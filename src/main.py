@@ -70,9 +70,9 @@ def main(argv):
 
             csvOut.writerow(chain.from_iterable([['Optimizer' + 'objfname' + 'ExecutionTime'], header]))
 
-        res = []
-
         for i in range(cnf.runs):
+            res = []
+
             evals = 0
             
             if cnf.verbosity:
