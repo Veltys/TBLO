@@ -45,11 +45,12 @@ def main(argv):
 
     optimizer = 'TBLO'
 
-    # CSV file header
-    header = []
+    if cnf.export:
+        # CSV file header
+        header = []
 
-    for i in range(cnf.iterations):
-        header.append(f'It{i + 1}')
+        for i in range(cnf.iterations):
+            header.append(f'It{i + 1}')
 
     try:
         if cnf.export:
