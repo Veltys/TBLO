@@ -19,6 +19,7 @@ class Learner(object):
 class Tblo(object):
     learners = []
 
+
     def __init__(self, nPopulation, nGenerations, fnEval, *, fnLb, fnUb):
         super(Tblo, self).__init__()
 
@@ -42,8 +43,10 @@ class Tblo(object):
 
         return teacher.subjects
 
+
     def initialize(self):
         self.learners = [self.createLearner() for _ in range(self.nPopulation)]
+
 
     def teacherPhase(self, learner):
         teacher = self.getTeacher()
@@ -61,6 +64,7 @@ class Tblo(object):
         best, bestFitness = self.selectBest(learner.subjects, roundedC)
 
         return (best, bestFitness)
+
 
     def learnerPhase(self, learner, learnerIndex):
         kIndex = self.randomLearnerExcluding([learnerIndex])
@@ -82,10 +86,12 @@ class Tblo(object):
 
         return (best, bestFitness)
 
+
     def getTeacher(self):
         best = min(self.learners, key = attrgetter('fitness'))
 
         return best
+
 
     def selectBest(self, subjects, cSubjects):
         sFitness = self.fitness(subjects)
@@ -100,6 +106,7 @@ class Tblo(object):
 
         return (best, bestFitness)
 
+
     def randomLearnerExcluding(self, excludedIndex):
         availableIndexes = set(range(self.nPopulation))
         excludeSet = set(excludedIndex)
@@ -107,6 +114,7 @@ class Tblo(object):
         selected = rand.choice(list(diff))
 
         return selected
+
 
     def fitness(self, solution):
         result = self.fnEval(solution)
@@ -120,11 +128,13 @@ class Tblo(object):
 
         return np.around(result, decimals = 4)
 
+
     def createLearner(self):
         solution = Tblo.randomVector(self.fnLb, self.fnUb)
         fitness = self.fitness(solution)
 
         return Learner(solution, fitness)
+
 
     @staticmethod
     def randomVector(lb, ub):
