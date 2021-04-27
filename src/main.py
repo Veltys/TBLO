@@ -115,12 +115,12 @@ def main(argv):
 
                 timerStart = time.time()
 
-                for _ in range(cnf.iterations):
-                    tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = -cnf.constraint, fnUb = cnf.constraint, dim = cnf.dimensions)
+                tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = -cnf.constraint, fnUb = cnf.constraint, dim = cnf.dimensions)
 
+                for _ in range(cnf.iterations):
                     res.append(cnf.function(tbloBenchmark.optimize()))
 
-                    evals += 2
+                    evals += cnf.population
 
                     if (cnf.progress):
                         pb.update(evals)
