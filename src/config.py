@@ -20,5 +20,6 @@ class Config(metaclass = ConfigSingleton):
         self.function = 'benchmark2020'
         self.iterations = 150000
         self.population = 50
+        self.progress = True
         self.runs = 30
         self.verbosity = True

@@ -8,6 +8,8 @@ import os
 import sys
 import time
 
+import progressbar
+
 import config
 import lib
 from tblo import Tblo
@@ -26,6 +28,7 @@ def parseClArgs(argv):
     parser.add_argument('-m', type = int, default = cnf.evals, dest = 'evals', help = 'maximum evaluations, default: 500.000')
     parser.add_argument('-p', type = int, default = cnf.population, dest = 'population', help = 'number of solutions per generation, default: 50')
     parser.add_argument('-r', type = int, default = cnf.runs, dest = 'runs', help = 'number of runs, default: 30')
+    parser.add_argument('-s', type = bool, default = cnf.progress, dest = 'progress', help = 'shown progress bar, default: True')
     parser.add_argument('-v', type = bool, default = cnf.verbosity, dest = 'verbosity', help = 'enable for verbosity, default: False (no verbose)')
 
     args = parser.parse_args(argv)
@@ -73,6 +76,9 @@ def main(argv):
     if not storeNewConfig(args):
         exit(os.EX_USAGE) # @UndefinedVariable
     else:
+        if cnf.progress:
+            pb = progressbar.ProgressBar(max_value = cnf.evals)
+
         if cnf.export:
             # CSV file header
             header = []
@@ -99,13 +105,13 @@ def main(argv):
 
                 csvOut.writerow(chain.from_iterable([['Optimizer', 'objfname', 'ExecutionTime'], header]))
 
-            for i in range(cnf.runs):
+            for _ in range(cnf.runs):
                 res = []
 
                 evals = 0
 
-                if cnf.verbosity:
-                    print(f'Run {i + 1} of {cnf.runs}')
+                if (cnf.progress):
+                    pb.update(evals)
 
                 timerStart = time.time()
 
@@ -115,6 +121,9 @@ def main(argv):
                     res.append(cnf.function(tbloBenchmark.optimize()))
 
                     evals += 2
+
+                    if (cnf.progress):
+                        pb.update(evals)
 
                     if evals >= cnf.evals:
                         break
