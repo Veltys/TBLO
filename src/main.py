@@ -69,13 +69,13 @@ def tlbo(csvOut):
 
     cnf = config.Config()
 
-    if cnf.progress:
-        pb = progressbar.ProgressBar(max_value = cnf.evals)
-
     if cnf.verbosity:
         print(f'{optimizer} is optimizing with {cnf.function.__name__}')
 
     for _ in range(cnf.runs):
+        if cnf.progress:
+            pb = progressbar.ProgressBar(max_value = cnf.evals)
+
         res = []
         evals = 0
 
@@ -95,9 +95,15 @@ def tlbo(csvOut):
                 pb.update(evals)
 
             if evals >= cnf.evals:
+                if (cnf.progress):
+                    pb.update(cnf.evals)
+
                 break
 
         timerEnd = time.time()
+
+        if cnf.progress:
+            print()
 
         if cnf.export:
             csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
