@@ -64,6 +64,45 @@ def storeNewConfig(args):
         return True
 
 
+def tlbo(csvOut):
+    optimizer = 'TBLO'
+
+    cnf = config.Config()
+
+    if cnf.progress:
+        pb = progressbar.ProgressBar(max_value = cnf.evals)
+
+    if cnf.verbosity:
+        print(f'{optimizer} is optimizing with {cnf.function.__name__}')
+
+    for _ in range(cnf.runs):
+        res = []
+        evals = 0
+
+        if (cnf.progress):
+            pb.update(evals)
+
+        timerStart = time.time()
+
+        tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb=-cnf.constraint, fnUb=cnf.constraint, dim=cnf.dimensions)
+
+        for _ in range(cnf.iterations):
+            res.append(cnf.function(tbloBenchmark.optimize()))
+
+            evals += cnf.population
+
+            if (cnf.progress):
+                pb.update(evals)
+
+            if evals >= cnf.evals:
+                break
+
+        timerEnd = time.time()
+
+        if cnf.export:
+            csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
+
+
 def main(argv):
     NOMBRE_ARCHIVO = f'experiment-{time.strftime("%Y-%m-%d-%H-%M-%S")}.csv'
 
@@ -71,21 +110,9 @@ def main(argv):
 
     cnf = config.Config()
 
-    optimizer = 'TBLO'
-
     if not storeNewConfig(args):
         exit(os.EX_USAGE) # @UndefinedVariable
     else:
-        if cnf.progress:
-            pb = progressbar.ProgressBar(max_value = cnf.evals)
-
-        if cnf.export:
-            # CSV file header
-            header = []
-
-            for i in range(cnf.iterations):
-                header.append(f'It{i + 1}')
-
         try:
             if cnf.export:
                 out = open(f'.{os.sep}{NOMBRE_ARCHIVO}', 'a')
@@ -97,41 +124,17 @@ def main(argv):
             exit(os.EX_OSFILE) # @UndefinedVariable
 
         else:
-            if cnf.verbosity:
-                print(f'{optimizer} is optimizing with {cnf.function.__name__}')
+            if cnf.export:
+                # CSV file header
+                header = []
 
-            if cnf.export == True:
+                for i in range(cnf.iterations):
+                    header.append(f'It{i + 1}')
+
                 csvOut = csv.writer(out, delimiter = ',')
-
                 csvOut.writerow(chain.from_iterable([['Optimizer', 'objfname', 'ExecutionTime'], header]))
 
-            for _ in range(cnf.runs):
-                res = []
-
-                evals = 0
-
-                if (cnf.progress):
-                    pb.update(evals)
-
-                timerStart = time.time()
-
-                tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = -cnf.constraint, fnUb = cnf.constraint, dim = cnf.dimensions)
-
-                for _ in range(cnf.iterations):
-                    res.append(cnf.function(tbloBenchmark.optimize()))
-
-                    evals += cnf.population
-
-                    if (cnf.progress):
-                        pb.update(evals)
-
-                    if evals >= cnf.evals:
-                        break
-
-                timerEnd = time.time()
-
-                if cnf.export:
-                    csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
+            tlbo(csvOut)
 
             if cnf.export:
                 out.close()
