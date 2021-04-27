@@ -53,7 +53,7 @@ def benchmark2020(x):
     libtest.free_array.argtypes = (ctypes.c_void_p,)
     libtest.free_array.restype = None
 
-    arr = libtest.cec20_bench(1, x.size, (ctypes.c_double * len(x))(*x), cnf.benchmark)
+    arr = libtest.cec20_bench(1, len(x), (ctypes.c_double * len(x))(*x), cnf.benchmark)
 
     res = ctypes.cast(arr, ctypes.POINTER(ctypes.c_double * 1))
 

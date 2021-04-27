@@ -20,14 +20,15 @@ class Tblo(object):
     learners = []
 
 
-    def __init__(self, nPopulation, nGenerations, fnEval, *, fnLb, fnUb):
+    def __init__(self, nPopulation, nGenerations, fnEval, *, fnLb, fnUb, dim):
         super(Tblo, self).__init__()
 
         self.nPopulation = nPopulation
         self.nGenerations = nGenerations
         self.fnEval = fnEval
-        self.fnLb = np.array(fnLb)
-        self.fnUb = np.array(fnUb)
+        self.dimensions = dim
+        self.fnLb = np.array([fnLb for _ in range(dim)])
+        self.fnUb = np.array([fnUb for _ in range(dim)])
 
 
     def optimize(self):

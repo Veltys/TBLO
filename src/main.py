@@ -110,7 +110,7 @@ def main(argv):
                 timerStart = time.time()
 
                 for _ in range(cnf.iterations):
-                    tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = [-cnf.constraint, -cnf.constraint], fnUb = [cnf.constraint, cnf.constraint])
+                    tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = -cnf.constraint, fnUb = cnf.constraint, dim = cnf.dimensions)
 
                     res.append(cnf.function(tbloBenchmark.optimize()))
 
