@@ -79,7 +79,7 @@ def tlbo(csvOut):
         res = []
         evals = 0
 
-        if (cnf.progress):
+        if cnf.progress:
             pb.update(evals)
 
         timerStart = time.time()
@@ -91,19 +91,20 @@ def tlbo(csvOut):
 
             evals += cnf.population
 
-            if (cnf.progress):
+            if cnf.progress:
                 pb.update(evals)
 
             if evals >= cnf.evals:
-                if (cnf.progress):
-                    pb.update(cnf.evals)
+                if cnf.progress:
+                    # pb.update(cnf.evals)
+                    pb.finish()
 
                 break
 
-        timerEnd = time.time()
-
         if cnf.progress:
-            print()
+            pb.finish()
+
+        timerEnd = time.time()
 
         if cnf.export:
             csvOut.writerow(chain.from_iterable([[optimizer, cnf.function.__name__, timerEnd - timerStart], res]))
