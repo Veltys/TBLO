@@ -39,12 +39,14 @@ def parseClArgs(argv):
 
 
 def guardar(alg, funcion, dimensiones, res):
+    fileName = f'{alg}_{funcion}_{dimensiones}.txt'
+
     try:
-        out = open(alg + '_' + str(funcion) + '_' + str(dimensiones) + '.txt', 'w')
+        out = open(fileName, 'w')
 
     except IOError:
-        print('Error de apertura del archivo <' + alg + '_' + str(funcion) + '_' + str(dimensiones) + '.txt>')
-        print('ERROR: imposible abrir el archivo <' + alg + '_' + str(funcion) + '_' + str(dimensiones) + '.txt>', file = sys.stderr)
+        print(f'Error de apertura del archivo <{fileName}>')
+        print(f'ERROR: imposible abrir el archivo <{fileName}>', file = sys.stderr)
 
         exit(os.EX_OSFILE) # @UndefinedVariable
 
@@ -105,13 +107,14 @@ def main(argv):
         for j in range(args.dMin - args.dStep, args.dMax, args.dStep):
             if(args.execute):
                 # Procesamiento: ejecución del programa
-                print('Función ' + str(i + args.fStep) + ' dimensión ' + str(j + args.dStep))
+                print(f'Función {i + args.fStep}, dimensión {j + args.dStep}')
 
                 m.main(['-b', str(i + args.fStep), '-d', str(j + args.dStep)])
 
             if(args.postprocessing):
                 # Posprocesamiento: recopilación de resultados
                 guardar(alg, i + args.fStep, j + args.dStep, posprocesar(j + args.dStep))
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
