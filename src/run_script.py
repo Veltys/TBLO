@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import argparse
 import linecache
 import os
 import re
@@ -10,6 +11,22 @@ import sys
 import numpy
 
 import main as m
+
+
+def parseClArgs(argv):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-fMin', type = int, default = 1, dest = 'fMin', help = 'minimum function id for benchmark 2020, default: 1; options: from 1 to 10')
+    parser.add_argument('-fMax', type = int, default = 10, dest = 'fMax', help = 'maximum function id for benchmark 2020, default: 10; options: from 1 to 10; note: it has to be greater or equal to fMin')
+    parser.add_argument('-fStep', type = int, default = 1, dest = 'fStep', help = 'function id step for benchmark 2020, default: 1; options: from 1 to 10')
+    parser.add_argument('-dMin', type = int, default = 10, dest = 'dMin', help = 'minimum dimension, default: 10; options: 10, 15 or 20')
+    parser.add_argument('-dMax', type = int, default = 20, dest = 'dMax', help = 'maximum dimension, default: 20; options: 10, 15 or 20; note: it has to be greater or equal to dMin')
+    parser.add_argument('-dStep', type = int, default = 5, dest = 'dStep', help = 'dimension step, default: 5; options: from 1 to 20')
+    parser.add_argument('-e', '-execute', type = bool, default = True, dest = 'execute', help = 'make execution phase; default True')
+    parser.add_argument('-p', '-postprocessing', type = bool, default = True, dest = 'postprocessing', help = 'make postprocessing phase; default True')
+
+    args = parser.parse_args(argv)
+
+    return args
 
 
 def guardar(alg, funcion, dimensiones, res):
@@ -34,27 +51,6 @@ def guardar(alg, funcion, dimensiones, res):
             out.write("\n")
 
         out.close()
-
-
-def preprocesar(argv):
-    if \
-        len(argv) < 2 or \
-        (not(re.match(r"[0-9]+", argv[0])) or int(argv[0]) < 1) or \
-        (not(re.match(r"[0-9]+", argv[1])) or int(argv[1]) < 1):
-        funciones = [ 1, 10, 1]
-        dimensiones = [10, 20, 5]
-    else:
-        funciones = [int(argv[0]), int(argv[1]), 1]
-
-        if \
-            len(argv) < 4 or \
-            (not(re.match(r"[0-9]+", argv[2])) or int(argv[2]) < 5) or \
-            (not(re.match(r"[0-9]+", argv[3])) or int(argv[3]) < 5):
-            dimensiones = [10, 20, 5]
-        else:
-            dimensiones = [int(argv[2]), int(argv[3]), 5]
-
-    return (funciones, dimensiones)
 
 
 def posprocesar(dimensiones):
@@ -94,24 +90,19 @@ def main(argv):
 
     alg = 'TBLO'
 
-    (funciones, dimensiones) = preprocesar(argv)
+    args = parseClArgs(argv)
 
-    for i in range(funciones[0] - funciones[2], funciones[1], funciones[2]):
-        for j in range(dimensiones[0] - dimensiones[2], dimensiones[1], dimensiones[2]):
-            # Procesamiento condicional a la no existencia del parámetro -r
-
-            if \
-                not(\
-                    (len(argv) == 1 and argv[0] == '-r') or \
-                    (len(argv) == 5 and argv[4] == '-r') \
-                ):
+    for i in range(args.fMin - args.fStep, args.fMax, args.fStep):
+        for j in range(args.dMin - args.dStep, args.dMax, args.dStep):
+            if(args.execute):
                 # Procesamiento: ejecución del programa
-                print('Función ' + str(i + funciones[2]) + ' dimensión ' + str(j + dimensiones[2]))
+                print('Función ' + str(i + args.fStep) + ' dimensión ' + str(j + args.dStep))
 
-                m.main(['-b', str(i + funciones[2]), '-d', str(j + dimensiones[2])])
+                m.main(['-b', str(i + args.fStep), '-d', str(j + args.dStep)])
 
-            # Posprocesamiento: recopilación de resultados
-            guardar(alg, i + funciones[2], j + dimensiones[2], posprocesar(j + dimensiones[2]))
+            if(args.postprocessing):
+                # Posprocesamiento: recopilación de resultados
+                guardar(alg, i + args.fStep, j + args.dStep, posprocesar(j + args.dStep))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
