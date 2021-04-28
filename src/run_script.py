@@ -2,6 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
+# Title         : run_script.py
+# Description   : Runner for this algorithm
+# Author        : Veltys
+# Date          : 2021-04-28
+# Version       : 1.0.0
+# Usage         : python3 run_script.py
+# Notes         : Use flag -h to see optional commands and help
+
+
 import argparse
 import linecache
 import os
