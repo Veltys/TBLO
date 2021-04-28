@@ -19,11 +19,11 @@ def parseClArgs(argv):
     cnf = config.Config()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', type = int, default = cnf.benchmark, dest = 'benchmark', help = 'benchmark 2020 function id, default: 1; options: from 1 to 10')
+    parser.add_argument('-b', type = int, default = cnf.benchmark, dest = 'benchmark', choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help = 'benchmark 2020 function id, default: 1; options: from 1 to 10')
     parser.add_argument('-c', type = float, default = cnf.constraint, dest = 'constraint', help = 'solution constraint value, default: 100')
-    parser.add_argument('-d', type = int, default = cnf.dimensions, dest = 'dimensions', help = 'dimensions, default: 10')
+    parser.add_argument('-d', type = int, default = cnf.dimensions, dest = 'dimensions', choices = [10, 15, 20], help = 'dimensions, default: 10')
     parser.add_argument('-e', type = bool, default = cnf.export, dest = 'export', help = 'enable for export data to CSV, default: True (export)')
-    parser.add_argument('-f', type = str, default = cnf.function, dest = 'function', help = 'function to be optimized, default: benchmark2020; options: sphere, ackley, rastrigin, benchmark2020')
+    parser.add_argument('-f', type = str, default = cnf.function, dest = 'function', choices = ['sphere', 'ackley', 'rastrigin', 'benchmark2020'], help = 'function to be optimized, default: benchmark2020')
     parser.add_argument('-i', type = int, default = cnf.iterations, dest = 'iterations', help = 'number of iterations, default: 150000')
     parser.add_argument('-m', type = int, default = cnf.evals, dest = 'evals', help = 'maximum evaluations, default: 500.000')
     parser.add_argument('-p', type = int, default = cnf.population, dest = 'population', help = 'number of solutions per generation, default: 50')
@@ -50,7 +50,6 @@ def storeNewConfig(args):
         print('Invalid supplied benchmark id ' + args.benchmark + '. Ensure benchmark id is valid or use command line options.')
 
         return False
-
     elif args.function not in funcs:
         print('Missing supplied function ' + args.function + ' definition. Ensure function defintion exists or use command line options.')
 

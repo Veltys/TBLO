@@ -15,14 +15,14 @@ import main as m
 
 def parseClArgs(argv):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-fMin', type = int, default = 1, dest = 'fMin', help = 'minimum function id for benchmark 2020, default: 1; options: from 1 to 10')
-    parser.add_argument('-fMax', type = int, default = 10, dest = 'fMax', help = 'maximum function id for benchmark 2020, default: 10; options: from 1 to 10; note: it has to be greater or equal to fMin')
-    parser.add_argument('-fStep', type = int, default = 1, dest = 'fStep', help = 'function id step for benchmark 2020, default: 1; options: from 1 to 10')
-    parser.add_argument('-dMin', type = int, default = 10, dest = 'dMin', help = 'minimum dimension, default: 10; options: 10, 15 or 20')
-    parser.add_argument('-dMax', type = int, default = 20, dest = 'dMax', help = 'maximum dimension, default: 20; options: 10, 15 or 20; note: it has to be greater or equal to dMin')
-    parser.add_argument('-dStep', type = int, default = 5, dest = 'dStep', help = 'dimension step, default: 5; options: from 1 to 20')
-    parser.add_argument('-e', '-execute', type = bool, default = True, dest = 'execute', help = 'make execution phase; default True')
-    parser.add_argument('-p', '-postprocessing', type = bool, default = True, dest = 'postprocessing', help = 'make postprocessing phase; default True')
+    parser.add_argument('-fMin', type = int, default = 1, dest = 'fMin', choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help = 'minimum function id for benchmark 2020, default: 1')
+    parser.add_argument('-fMax', type = int, default = 10, dest = 'fMax', choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help = 'maximum function id for benchmark 2020, default: 10; note: it has to be greater or equal to fMin')
+    parser.add_argument('-fStep', type = int, default = 1, dest = 'fStep', choices = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], help = 'function id step for benchmark 2020, default: 1')
+    parser.add_argument('-dMin', type = int, default = 10, dest = 'dMin', choices = [10, 15, 20], help = 'minimum dimension, default: 10')
+    parser.add_argument('-dMax', type = int, default = 20, dest = 'dMax', choices = [10, 15, 20], help = 'maximum dimension, default: 20; note: it has to be greater or equal to dMin')
+    parser.add_argument('-dStep', type = int, default = 5, dest = 'dStep', choices = [10, 15, 20], help = 'dimension step, default: 5')
+    parser.add_argument('-e', '--execute', type = bool, default = True, dest = 'execute', help = 'make execution phase; default True')
+    parser.add_argument('-p', '--postprocessing', type = bool, default = True, dest = 'postprocessing', help = 'make postprocessing phase; default True')
 
     args = parser.parse_args(argv)
 
