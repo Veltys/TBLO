@@ -118,7 +118,7 @@ def main(argv):
     cnf = config.Config()
 
     if not storeNewConfig(args):
-        exit(errno.EPERM)
+        sys.exit(errno.EPERM)
     else:
         try:
             if cnf.export:
@@ -128,7 +128,7 @@ def main(argv):
             print(f'Error de apertura del archivo <{NOMBRE_ARCHIVO}>')
             print(f'ERROR: imposible abrir el archivo <{NOMBRE_ARCHIVO}>', file = sys.stderr)
 
-            exit(errno.ENOENT)
+            sys.exit(errno.ENOENT)
 
         else:
             if cnf.export:
