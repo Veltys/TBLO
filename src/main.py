@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import errno
 from itertools import chain
 import os
 import sys
@@ -117,7 +118,7 @@ def main(argv):
     cnf = config.Config()
 
     if not storeNewConfig(args):
-        exit(os.EX_USAGE) # @UndefinedVariable
+        exit(errno.EPERM)
     else:
         try:
             if cnf.export:
@@ -127,7 +128,7 @@ def main(argv):
             print(f'Error de apertura del archivo <{NOMBRE_ARCHIVO}>')
             print(f'ERROR: imposible abrir el archivo <{NOMBRE_ARCHIVO}>', file = sys.stderr)
 
-            exit(os.EX_OSFILE) # @UndefinedVariable
+            exit(errno.ENOENT)
 
         else:
             if cnf.export:
