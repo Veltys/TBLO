@@ -47,11 +47,11 @@ def storeNewConfig(args):
         'benchmark2020': lib.benchmark2020,
     }
 
-    if args.function == 'benchmark2020' and (args.benchmark < 1 or args.benchmark > 10):
+    if (args.function == 'benchmark2020' or args.function == lib.benchmark2020) and (args.benchmark < 1 or args.benchmark > 10):
         print(f'Invalid supplied benchmark id {args.benchmark}. Ensure benchmark id is valid or use command line options.')
 
         return False
-    elif args.function not in funcs:
+    elif (isinstance(args.function, str) and args.function not in funcs) or (callable(args.function) and args.function not in funcs.values()):
         print(f'Missing supplied function {args.function} definition. Ensure function defintion exists or use command line options.')
 
         return False
@@ -59,7 +59,8 @@ def storeNewConfig(args):
         for name, arg in vars(args).items():
             setattr(cnf, name, arg)
 
-        cnf.function = funcs[cnf.function]
+        if (not callable(args.function)):
+            cnf.function = funcs[cnf.function]
 
         return True
 
