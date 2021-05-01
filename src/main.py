@@ -48,11 +48,11 @@ def storeNewConfig(args):
     }
 
     if args.function == 'benchmark2020' and (args.benchmark < 1 or args.benchmark > 10):
-        print('Invalid supplied benchmark id ' + args.benchmark + '. Ensure benchmark id is valid or use command line options.')
+        print(f'Invalid supplied benchmark id {args.benchmark}. Ensure benchmark id is valid or use command line options.')
 
         return False
     elif args.function not in funcs:
-        print('Missing supplied function ' + args.function + ' definition. Ensure function defintion exists or use command line options.')
+        print(f'Missing supplied function {args.function} definition. Ensure function defintion exists or use command line options.')
 
         return False
     else:
