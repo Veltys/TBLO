@@ -147,6 +147,9 @@ def main(argv):
             if cnf.export:
                 out.close()
 
+            if cnf.progress:
+                print()
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
