@@ -85,10 +85,12 @@ def tlbo(csvOut):
 
         timerStart = time.time()
 
-        tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb=-cnf.constraint, fnUb=cnf.constraint, dim=cnf.dimensions)
+        tbloBenchmark = Tblo(cnf.population, cnf.iterations, cnf.function, fnLb = -cnf.constraint, fnUb = cnf.constraint, dim = cnf.dimensions)
 
         for _ in range(cnf.iterations):
-            res.append(cnf.function(tbloBenchmark.optimize()))
+            tbloBenchmark.optimize()
+
+            res.append(tbloBenchmark.getTeacher().fitness)
 
             evals += cnf.population
 

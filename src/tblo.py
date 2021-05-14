@@ -120,14 +120,12 @@ class Tblo(object):
     def fitness(self, solution):
         result = self.fnEval(solution)
 
-        '''
         if result >= 0:
             fitness = 1 / (1 + result)
         else:
-            fitness = abs(result)
-        '''
+            fitness = 1 + abs(result)
 
-        return np.around(result, decimals = 4)
+        return np.around(fitness, decimals = 4)
 
 
     def createLearner(self):
