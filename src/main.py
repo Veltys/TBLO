@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
 
 
+'''!
+    @file:           main.py
+    @brief:          Main program
+
+    @author:         Rafael Carlos Méndez Rodríguez (i82meror)
+    @date:           2021-05-14
+    @version:        1.6.2
+    @usage:          python3 run_script.py
+    @note:           Use flag -h to see optional commands and help
+'''
+
+
 import argparse
 import csv
 import errno
@@ -17,6 +29,13 @@ from tblo import Tblo
 
 
 def parseClArgs(argv):
+    '''! Procesa los argumentos pasados al programa
+    
+        @param argv:    Vector de argumentos
+    
+        @return:        Argumentos procesados
+    '''
+
     cnf = config.Config()
 
     parser = argparse.ArgumentParser()
@@ -38,6 +57,13 @@ def parseClArgs(argv):
 
 
 def storeNewConfig(args):
+    '''! Valida y almacena la nueva configuración
+    
+        @param args:    Argumentos a almacenar
+    
+        @return:        Si la configuración es válida y, por ende, se ha almacenado
+    '''
+
     cnf = config.Config()
 
     funcs = {
@@ -66,6 +92,11 @@ def storeNewConfig(args):
 
 
 def tlbo(csvOut):
+    '''! Ejecuta el algoritmo TBLO
+    
+        @param csvOut:  Archivo de salida
+    '''
+
     optimizer = 'TBLO'
 
     cnf = config.Config()
@@ -114,6 +145,13 @@ def tlbo(csvOut):
 
 
 def main(argv):
+    '''! Ejecuta el algoritmo TBLO y exporta, de estar configurado así, los resultados a formato CSV
+    
+        @param argv:    Vector de argumentos
+    
+        @return:        Código de retorno
+    '''
+
     NOMBRE_ARCHIVO = f'experiment-{time.strftime("%Y-%m-%d-%H-%M-%S")}.csv'
 
     args = parseClArgs(argv)
